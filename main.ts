@@ -6,6 +6,9 @@ interface ToggleableTablesSettings {
 	showRowCount: boolean;
 	animationSpeed: number;
 	customSummaryText: string;
+	enableHybridEditMode: boolean;
+	enableMultiLineSupport: boolean;
+	hybridPreviewOpacity: number;
 }
 
 const DEFAULT_SETTINGS: ToggleableTablesSettings = {
@@ -13,7 +16,10 @@ const DEFAULT_SETTINGS: ToggleableTablesSettings = {
 	defaultCollapsed: false,
 	showRowCount: true,
 	animationSpeed: 200,
-	customSummaryText: "Click to expand table"
+	customSummaryText: "Click to expand table",
+	enableHybridEditMode: true,
+	enableMultiLineSupport: true,
+	hybridPreviewOpacity: 0.3
 }
 
 export default class ToggleableTablesPlugin extends Plugin {
@@ -26,6 +32,11 @@ export default class ToggleableTablesPlugin extends Plugin {
 		this.registerMarkdownPostProcessor((element, context) => {
 			this.processTables(element);
 		});
+
+		// Register editor extension for hybrid edit mode
+		if (this.settings.enableHybridEditMode) {
+			this.registerEditorExtension(this.createHybridEditExtension());
+		}
 
 		// Add command to toggle table manually
 		this.addCommand({
@@ -42,6 +53,15 @@ export default class ToggleableTablesPlugin extends Plugin {
 			name: 'Wrap Table in Toggle',
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				this.wrapTableInToggle(editor, view);
+			}
+		});
+
+		// Add command to toggle hybrid edit mode
+		this.addCommand({
+			id: 'toggle-hybrid-edit',
+			name: 'Toggle Hybrid Edit Mode',
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+				this.toggleHybridEditMode(editor, view);
 			}
 		});
 
@@ -65,13 +85,37 @@ export default class ToggleableTablesPlugin extends Plugin {
 		const tables = element.querySelectorAll('table');
 		
 		tables.forEach((table) => {
-			const rowCount = table.rows.length;
+			const effectiveRowCount = this.countEffectiveRows(table);
 			
 			// Only make tables toggleable if they exceed the threshold
-			if (rowCount > this.settings.rowThreshold) {
+			if (effectiveRowCount > this.settings.rowThreshold) {
 				this.makeTableToggleable(table);
 			}
 		});
+	}
+
+	private countEffectiveRows(table: HTMLTableElement): number {
+		if (!this.settings.enableMultiLineSupport) {
+			return table.rows.length;
+		}
+
+		let effectiveRows = 0;
+		
+		table.querySelectorAll('tr').forEach(row => {
+			const cells = row.querySelectorAll('td, th');
+			let maxLinesInRow = 1;
+			
+			cells.forEach(cell => {
+				// Count line breaks in cell content
+				const lineBreaks = (cell.textContent?.match(/\n/g) || []).length;
+				const cellLines = lineBreaks + 1;
+				maxLinesInRow = Math.max(maxLinesInRow, cellLines);
+			});
+			
+			effectiveRows += maxLinesInRow;
+		});
+		
+		return effectiveRows;
 	}
 
 	private makeTableToggleable(table: HTMLTableElement) {
@@ -96,7 +140,7 @@ export default class ToggleableTablesPlugin extends Plugin {
 		let summaryText = this.settings.customSummaryText;
 		if (this.settings.showRowCount) {
 			const rowCount = table.rows.length;
-			summaryText += ` (${rowCount} rows)`;
+			summaryText += ` (${this.countEffectiveRows(table)} rows)`;
 		}
 		
 		summary.textContent = summaryText;
@@ -112,6 +156,174 @@ export default class ToggleableTablesPlugin extends Plugin {
 			e.preventDefault();
 			details.toggleAttribute('open');
 		});
+	}
+
+	private createHybridEditExtension() {
+		// Import the necessary CodeMirror extensions
+		const { EditorView } = require('@codemirror/view');
+		const { StateField, StateEffect } = require('@codemirror/state');
+		
+		// Create a state field to track table preview state
+		const tablePreviewState = StateField.define({
+			create: () => ({ active: false, tableRange: null }),
+			update: (value, tr) => {
+				// Update state based on cursor position
+				const cursor = tr.selection.main.head;
+				const tableRange = this.findTableRangeAtPosition(tr.doc, cursor);
+				
+				if (tableRange) {
+					return { active: true, tableRange };
+				} else {
+					return { active: false, tableRange: null };
+				}
+			}
+		});
+
+		// Create the extension
+		return [
+			tablePreviewState,
+			EditorView.updateListener.of((update) => {
+				if (update.docChanged || update.selectionSet) {
+					this.handleHybridEditUpdate(update);
+				}
+			})
+		];
+	}
+
+	private findTableRangeAtPosition(doc: any, pos: number): { start: number, end: number } | null {
+		// Find table boundaries at cursor position
+		const line = doc.lineAt(pos);
+		const lineText = line.text;
+		
+		if (lineText.includes('|')) {
+			// Find table start and end
+			const tableStart = this.findTableStartInDoc(doc, line.number);
+			const tableEnd = this.findTableEndInDoc(doc, line.number);
+			
+			if (tableStart !== -1 && tableEnd !== -1) {
+				return { start: tableStart, end: tableEnd };
+			}
+		}
+		
+		return null;
+	}
+
+	private findTableStartInDoc(doc: any, lineNum: number): number {
+		let currentLine = lineNum;
+		while (currentLine >= 0) {
+			const line = doc.line(currentLine + 1);
+			if (line.text.trim().startsWith('|') && line.text.trim().endsWith('|')) {
+				currentLine--;
+			} else {
+				break;
+			}
+		}
+		return doc.line(currentLine + 2).from;
+	}
+
+	private findTableEndInDoc(doc: any, lineNum: number): number {
+		let currentLine = lineNum;
+		const totalLines = doc.lines;
+		
+		while (currentLine < totalLines) {
+			const line = doc.line(currentLine + 1);
+			if (line.text.trim().startsWith('|') && line.text.trim().endsWith('|')) {
+				currentLine++;
+			} else {
+				break;
+			}
+		}
+		return doc.line(currentLine).to;
+	}
+
+	private handleHybridEditUpdate(update: any) {
+		// Handle hybrid edit mode updates
+		if (!this.settings.enableHybridEditMode) return;
+		
+		const cursor = update.state.selection.main.head;
+		const tableRange = this.findTableRangeAtPosition(update.state.doc, cursor);
+		
+		if (tableRange) {
+			this.showTablePreview(tableRange);
+		} else {
+			this.hideTablePreview();
+		}
+	}
+
+	private showTablePreview(tableRange: { start: number, end: number }) {
+		// Show rendered table preview
+		const activeView = this.app.workspace.activeLeaf?.view;
+		if (activeView instanceof MarkdownView) {
+			const editor = activeView.editor;
+			const tableText = editor.getRange(tableRange.start, tableRange.end);
+			
+			// Create floating preview
+			this.createFloatingPreview(tableText, tableRange);
+		}
+	}
+
+	private hideTablePreview() {
+		// Hide floating preview
+		const existingPreview = document.querySelector('.table-preview-overlay');
+		if (existingPreview) {
+			existingPreview.remove();
+		}
+	}
+
+	private createFloatingPreview(tableText: string, range: { start: number, end: number }) {
+		// Remove existing preview
+		this.hideTablePreview();
+		
+		// Create new preview
+		const preview = document.createElement('div');
+		preview.className = 'table-preview-overlay';
+		preview.innerHTML = `
+			<div class="table-preview-content">
+				<div class="table-preview-header">Table Preview</div>
+				<div class="table-preview-body">${this.convertMarkdownToHtml(tableText)}</div>
+			</div>
+		`;
+		
+		// Position the preview
+		const activeView = this.app.workspace.activeLeaf?.view;
+		if (activeView instanceof MarkdownView) {
+			const editorElement = activeView.editorEl;
+			editorElement.appendChild(preview);
+		}
+	}
+
+	private convertMarkdownToHtml(markdown: string): string {
+		// Simple markdown to HTML conversion for tables
+		const lines = markdown.split('\n');
+		let html = '<table>';
+		
+		lines.forEach((line, index) => {
+			if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+				const cells = line.split('|').slice(1, -1);
+				const isHeader = index === 0 || lines[index - 1].includes('---');
+				
+				html += `<tr>`;
+				cells.forEach(cell => {
+					const tag = isHeader ? 'th' : 'td';
+					html += `<${tag}>${cell.trim()}</${tag}>`;
+				});
+				html += `</tr>`;
+			}
+		});
+		
+		html += '</table>';
+		return html;
+	}
+
+	private toggleHybridEditMode(editor: Editor, view: MarkdownView) {
+		this.settings.enableHybridEditMode = !this.settings.enableHybridEditMode;
+		this.saveSettings();
+		
+		if (this.settings.enableHybridEditMode) {
+			this.registerEditorExtension(this.createHybridEditExtension());
+		} else {
+			this.hideTablePreview();
+		}
 	}
 
 	private toggleTableAtCursor(editor: Editor, view: MarkdownView) {
@@ -252,6 +464,38 @@ class ToggleableTablesSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.customSummaryText)
 				.onChange(async (value) => {
 					this.plugin.settings.customSummaryText = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable Multi-line Cell Support')
+			.setDesc('Count line breaks within cells when determining table size')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableMultiLineSupport)
+				.onChange(async (value) => {
+					this.plugin.settings.enableMultiLineSupport = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Enable Hybrid Edit Mode')
+			.setDesc('Show table preview when cursor is in table area')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.enableHybridEditMode)
+				.onChange(async (value) => {
+					this.plugin.settings.enableHybridEditMode = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Hybrid Preview Opacity')
+			.setDesc('Opacity of the floating table preview')
+			.addSlider(slider => slider
+				.setLimits(0.1, 1.0, 0.1)
+				.setValue(this.plugin.settings.hybridPreviewOpacity)
+				.setDynamicTooltip()
+				.onChange(async (value) => {
+					this.plugin.settings.hybridPreviewOpacity = value;
 					await this.plugin.saveSettings();
 				}));
 	}
