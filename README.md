@@ -140,7 +140,7 @@ If you encounter any issues or have feature requests, please open an issue on th
 
 ## Changelog
 
-### v1.0.0
+### v1.2.0
 - Initial release
 - Automatic table detection and toggling
 - Customizable settings
