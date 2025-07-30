@@ -6,6 +6,7 @@ A plugin that automatically makes long tables toggleable with dropdown behavior 
 
 - **Automatic Table Detection**: Tables with more than a configurable number of rows are automatically made toggleable
 - **Customizable Settings**: Adjust row threshold, default collapse state, and summary text
+- **Table Row Styling**: Choose between alternating row colors or single color styling
 - **Smooth Animations**: Beautiful expand/collapse animations with configurable speed
 - **Command Palette Integration**: Manual commands to toggle tables and wrap tables in toggles
 - **Responsive Design**: Works well on desktop and mobile devices
@@ -47,6 +48,7 @@ Access settings via Settings → Community Plugins → Toggleable Tables:
 - **Show Row Count**: Display the number of rows in the toggle summary
 - **Animation Speed**: Speed of expand/collapse animations in milliseconds
 - **Custom Summary Text**: Text to display in the toggle summary
+- **Table Row Styling**: Choose between alternating row colors or single color styling
 
 ## Examples
 

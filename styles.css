@@ -70,8 +70,9 @@
 	color: var(--text-normal);
 }
 
+/* Table row styling - controlled by CSS custom properties */
 .toggleable-table table tr:nth-child(even) td {
-	background: var(--background-secondary);
+	background: var(--toggleable-table-even-row-bg, var(--background-secondary));
 }
 
 .toggleable-table table tr:hover td {
@@ -206,7 +207,7 @@
 
 /* Enhanced table styling for multi-line content */
 .toggleable-table table tr:nth-child(even) td {
-	background: var(--background-secondary);
+	background: var(--toggleable-table-even-row-bg, var(--background-secondary));
 }
 
 .toggleable-table table tr:hover td {

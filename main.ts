@@ -9,6 +9,7 @@ interface ToggleableTablesSettings {
 	enableHybridEditMode: boolean;
 	enableMultiLineSupport: boolean;
 	hybridPreviewOpacity: number;
+	tableRowStyling: 'alternating' | 'single';
 }
 
 const DEFAULT_SETTINGS: ToggleableTablesSettings = {
@@ -19,7 +20,8 @@ const DEFAULT_SETTINGS: ToggleableTablesSettings = {
 	customSummaryText: "Click to expand table",
 	enableHybridEditMode: true,
 	enableMultiLineSupport: true,
-	hybridPreviewOpacity: 0.3
+	hybridPreviewOpacity: 0.3,
+	tableRowStyling: 'alternating'
 }
 
 export default class ToggleableTablesPlugin extends Plugin {
@@ -27,6 +29,9 @@ export default class ToggleableTablesPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+
+		// Apply table styling based on settings
+		this.applyTableStyling();
 
 		// Register markdown post processor to make tables toggleable
 		this.registerMarkdownPostProcessor((element, context) => {
@@ -150,6 +155,9 @@ export default class ToggleableTablesPlugin extends Plugin {
 		wrapper.appendChild(details);
 		details.appendChild(summary);
 		details.appendChild(table);
+		
+		// Apply current styling to the table
+		this.applyTableStyling();
 		
 		// Add click handler for better UX
 		summary.addEventListener('click', (e) => {
@@ -396,6 +404,19 @@ export default class ToggleableTablesPlugin extends Plugin {
 		}
 		return currentLine - 1;
 	}
+
+	public applyTableStyling() {
+		// Apply CSS custom properties to the document root
+		const root = document.documentElement;
+		
+		if (this.settings.tableRowStyling === 'single') {
+			// For single color, set even rows to same color as odd rows
+			root.style.setProperty('--toggleable-table-even-row-bg', 'var(--background-primary)');
+		} else {
+			// For alternating colors, use the default secondary background
+			root.style.setProperty('--toggleable-table-even-row-bg', 'var(--background-secondary)');
+		}
+	}
 }
 
 class ToggleableTablesSettingTab extends PluginSettingTab {
@@ -422,6 +443,7 @@ class ToggleableTablesSettingTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.rowThreshold = parseInt(value) || 10;
 					await this.plugin.saveSettings();
+					this.plugin.applyTableStyling(); // Apply styling after changing row threshold
 				}));
 
 		new Setting(containerEl)
@@ -497,6 +519,19 @@ class ToggleableTablesSettingTab extends PluginSettingTab {
 				.onChange(async (value) => {
 					this.plugin.settings.hybridPreviewOpacity = value;
 					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName('Table Row Styling')
+			.setDesc('Choose how table rows are styled (alternating or single color)')
+			.addDropdown(dropdown => dropdown
+				.addOption('alternating', 'Alternating Colors')
+				.addOption('single', 'Single Color')
+				.setValue(this.plugin.settings.tableRowStyling)
+				.onChange(async (value) => {
+					this.plugin.settings.tableRowStyling = value as 'alternating' | 'single';
+					await this.plugin.saveSettings();
+					this.plugin.applyTableStyling(); // Apply styling after changing row styling
 				}));
 	}
 } 
