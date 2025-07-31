@@ -1,5 +1,5 @@
 {
-	"name": "obsidian-toggleable-tables",
+	"name": "obsidian-toggle-tables",
 	"version": "1.0.0",
 	"description": "Makes long tables toggleable with dropdown behavior in Obsidian",
 	"main": "main.js",
@@ -15,7 +15,7 @@
 		"toggle",
 		"collapsible"
 	],
-	"author": "Your Name",
+	"author": "CL",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
