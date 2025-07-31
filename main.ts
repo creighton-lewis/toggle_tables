@@ -30,6 +30,9 @@ export default class ToggleTablesPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+		// Load CSS styles
+		this.loadStyles();
+
 		// Apply table styling based on settings
 		this.applyTableStyling();
 
@@ -84,6 +87,81 @@ export default class ToggleTablesPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	private loadStyles() {
+		// Load the CSS file
+		const link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.href = 'data:text/css;base64,' + btoa(`
+			/* Toggle Tables Plugin Styles */
+			.toggleable-table-wrapper {
+				margin: 1em 0;
+			}
+			.toggleable-table {
+				border: 1px solid var(--background-modifier-border);
+				border-radius: 6px;
+				background: var(--background-secondary);
+				overflow: hidden;
+				transition: all 0.2s ease-in-out;
+			}
+			.toggleable-table:hover {
+				border-color: var(--interactive-accent);
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+			}
+			.toggleable-table-summary {
+				padding: 12px 16px;
+				background: var(--background-primary);
+				border-bottom: 1px solid var(--background-modifier-border);
+				cursor: pointer;
+				font-weight: 500;
+				color: var(--text-normal);
+				user-select: none;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				transition: background-color 0.2s ease;
+			}
+			.toggleable-table-summary:hover {
+				background: var(--background-secondary);
+			}
+			.toggleable-table-summary::before {
+				content: "▶";
+				margin-right: 8px;
+				font-size: 0.8em;
+				color: var(--text-muted);
+				transition: transform 0.2s ease;
+			}
+			.toggleable-table[open] .toggleable-table-summary::before {
+				transform: rotate(90deg);
+			}
+			.toggleable-table table {
+				margin: 0;
+				border-collapse: collapse;
+				width: 100%;
+			}
+			.toggleable-table table th,
+			.toggleable-table table td {
+				padding: 8px 12px;
+				border: 1px solid var(--background-modifier-border);
+			}
+			.toggleable-table table th {
+				background: var(--background-primary-alt);
+				font-weight: 600;
+				color: var(--text-normal);
+			}
+			.toggleable-table table td {
+				background: var(--background-primary);
+				color: var(--text-normal);
+			}
+			.toggleable-table table tr:nth-child(even) td {
+				background: var(--toggleable-table-even-row-bg, var(--background-secondary));
+			}
+			.toggleable-table table tr:hover td {
+				background: var(--background-modifier-hover);
+			}
+		`);
+		document.head.appendChild(link);
 	}
 
 	private processTables(element: HTMLElement) {
