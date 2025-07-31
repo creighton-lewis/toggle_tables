@@ -1,6 +1,6 @@
 import { App, Editor, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-interface ToggleableTablesSettings {
+interface toggle_tablesSettings {
 	rowThreshold: number;
 	defaultCollapsed: boolean;
 	showRowCount: boolean;
@@ -8,7 +8,7 @@ interface ToggleableTablesSettings {
 	customSummaryText: string;
 }
 
-const DEFAULT_SETTINGS: ToggleableTablesSettings = {
+const DEFAULT_SETTINGS: toggle_tablesSettings = {
 	rowThreshold: 10,
 	defaultCollapsed: false,
 	showRowCount: true,
@@ -16,8 +16,8 @@ const DEFAULT_SETTINGS: ToggleableTablesSettings = {
 	customSummaryText: "Click to expand table"
 }
 
-export default class ToggleableTablesPlugin extends Plugin {
-	settings: ToggleableTablesSettings;
+export default class toggle_tablesPlugin extends Plugin {
+	settings: toggle_tablesSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -46,7 +46,7 @@ export default class ToggleableTablesPlugin extends Plugin {
 		});
 
 		// Add settings tab
-		this.addSettingTab(new ToggleableTablesSettingTab(this.app, this));
+		this.addSettingTab(new toggle_tablesSettingTab(this.app, this));
 	}
 
 	onunload() {
@@ -186,10 +186,10 @@ export default class ToggleableTablesPlugin extends Plugin {
 	}
 }
 
-class ToggleableTablesSettingTab extends PluginSettingTab {
-	plugin: ToggleableTablesPlugin;
+class toggle_tablesSettingTab extends PluginSettingTab {
+	plugin: toggle_tablesPlugin;
 
-	constructor(app: App, plugin: ToggleableTablesPlugin) {
+	constructor(app: App, plugin: toggle_tablesPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
