@@ -1,6 +1,6 @@
 {
-	"id": "toggleable-tables",
-	"name": "Toggleable Tables",
+	"id": "toggle_tables",
+	"name": "Toggle_Tables",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Makes long tables toggleable with dropdown behavior in Obsidian.",
