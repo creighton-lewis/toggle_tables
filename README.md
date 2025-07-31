@@ -1,4 +1,4 @@
-# Toggleable Tables Plugin for Obsidian
+# Togglea Table Plugin for Obsidian
 
 A plugin that automatically makes long tables toggleable with dropdown behavior in Obsidian, improving readability and organization of your notes.
 
