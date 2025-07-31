@@ -342,7 +342,7 @@ var ToggleableTablesSettingTab = class extends import_obsidian.PluginSettingTab 
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Toggleable Tables Settings" });
+    containerEl.createEl("h2", { text: "Toggle Tables Settings" });
     new import_obsidian.Setting(containerEl).setName("Row Threshold").setDesc("Tables with more than this many rows will be made toggleable").addText((text) => text.setPlaceholder("10").setValue(this.plugin.settings.rowThreshold.toString()).onChange(async (value) => {
       this.plugin.settings.rowThreshold = parseInt(value) || 10;
       await this.plugin.saveSettings();

@@ -1,6 +1,6 @@
 # Table Styling Test
 
-This file demonstrates the new table row styling feature in the Toggleable Tables plugin.
+This file demonstrates the new table row styling feature in the Toggle Tables plugin.
 
 ## Test Table 1 - Default Alternating Colors
 
@@ -33,7 +33,7 @@ This file demonstrates the new table row styling feature in the Toggleable Table
 
 ## Instructions
 
-1. Open the plugin settings (Settings → Community Plugins → Toggleable Tables)
+1. Open the plugin settings (Settings → Community Plugins → Toggle Tables)
 2. Change the "Table Row Styling" setting between "Alternating Colors" and "Single Color"
 3. Observe how the table row colors change in real-time
 4. The first table shows alternating colors by default

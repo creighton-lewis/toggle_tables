@@ -2,7 +2,7 @@
 
 ## ✅ Project Status: COMPLETE
 
-The Toggleable Tables plugin has been successfully built and is ready for installation in Obsidian.
+The Toggle Tables plugin has been successfully built and is ready for installation in Obsidian.
 
 ## Files Created
 
@@ -40,11 +40,11 @@ styles.css
 2. Go to Settings → Community Plugins
 3. Turn off Safe mode (if enabled)
 4. Click "Refresh" to see the new plugin
-5. Enable "Toggleable Tables"
+5. Enable "Toggle Tables"
 
 ### 3. Configure Settings
 
-Go to Settings → Community Plugins → Toggleable Tables to customize:
+Go to Settings → Community Plugins → Toggle Tables to customize:
 - Row threshold (default: 10 rows)
 - Default collapse state
 - Animation speed

@@ -1,4 +1,4 @@
-# Toggleable Tables Plugin for Obsidian
+# Toggle Tables Plugin for Obsidian
 
 A plugin that automatically makes long tables toggleable with dropdown behavior in Obsidian, improving readability and organization of your notes.
 
@@ -41,7 +41,7 @@ The plugin automatically detects tables with more than the configured number of 
 
 ### Settings
 
-Access settings via Settings → Community Plugins → Toggleable Tables:
+Access settings via Settings → Community Plugins → Toggle Tables:
 
 - **Row Threshold**: Number of rows before a table becomes toggleable (default: 10)
 - **Default Collapsed**: Whether tables should be collapsed by default

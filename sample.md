@@ -1,6 +1,6 @@
-# Toggleable Tables Plugin Demo
+# Toggle Tables Plugin Demo
 
-This file demonstrates the functionality of the Toggleable Tables plugin.
+This file demonstrates the functionality of the Toggle Tables plugin.
 
 ## Small Table (Not Toggleable)
 

@@ -432,7 +432,7 @@ class ToggleableTablesSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Toggleable Tables Settings' });
+		containerEl.createEl('h2', { text: 'Toggle Tables Settings' });
 
 		new Setting(containerEl)
 			.setName('Row Threshold')
