@@ -1,30 +1,29 @@
 {
-	"name": "obsidian-toggleable-tables",
-	"version": "1.0.0",
-	"description": "Makes long tables toggleable with dropdown behavior in Obsidian",
+	"name": "obsidian-sample-plugin",
+	"version": "4.0.0",
+	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node -e \"console.log(require('./package.json').version)\""
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
-	"keywords": [
-		"obsidian",
-		"plugin",
-		"tables",
-		"toggle",
-		"collapsible"
-	],
-	"author": "Your Name",
+	"keywords": [],
+	"author": "",
 	"license": "MIT",
 	"devDependencies": {
+		"@types/howler": "^2.2.12",
 		"@types/node": "^16.11.6",
-		"@typescript-eslint/eslint-plugin": "^5.2.0",
-		"@typescript-eslint/parser": "^5.2.0",
-		"builtin-modules": "^3.2.0",
-		"esbuild": "^0.25.8",
-		"obsidian": "^1.8.7",
-		"tslib": "2.3.1",
-		"typescript": "4.4.4"
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "0.17.3",
+		"obsidian": "latest",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"howler": "^2.2.4",
+		"react-howler": "^5.2.0"
 	}
 }

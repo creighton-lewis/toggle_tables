@@ -1,10 +1,12 @@
 {
 	"id": "toggle_tables",
-	"name": "Toggle_Tables",
-	"version": "1.0.0",
+	"name": "Toggle Tables",
+	"version": "4.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Makes long tables toggleable with dropdown behavior in Obsidian.",
-	"author": "Your Name",
-	"authorUrl": "https://github.com/yourusername",
-	"isDesktopOnly": false
-} 
+	"description": "Creates toggleable and customizable tables with audio effects included",
+	"author": "CL",
+	"authorUrl": "https://github.com/creighton-lewis",
+	"fundingUrl": "https://obsidian.md/pricing",
+	"isDesktopOnly": false,
+	"main":"main.js"
+}

@@ -5,11 +5,13 @@ A plugin that automatically makes long tables toggleable with dropdown behavior 
 ## Features
 
 - **Automatic Table Detection**: Tables with more than a configurable number of rows are automatically made toggleable
+- **Advanced Row Styling**: Customizable alternating row colors, header styling, and hover effects
 - **Customizable Settings**: Adjust row threshold, default collapse state, and summary text
 - **Smooth Animations**: Beautiful expand/collapse animations with configurable speed
 - **Command Palette Integration**: Manual commands to toggle tables and wrap tables in toggles
 - **Responsive Design**: Works well on desktop and mobile devices
 - **Dark Mode Support**: Automatically adapts to Obsidian's theme settings
+- **Real-time Styling Updates**: Style changes apply immediately to all tables
 
 ## Installation
 
@@ -42,11 +44,21 @@ The plugin automatically detects tables with more than the configured number of 
 
 Access settings via Settings → Community Plugins → Toggleable Tables:
 
+#### General Settings
 - **Row Threshold**: Number of rows before a table becomes toggleable (default: 10)
 - **Default Collapsed**: Whether tables should be collapsed by default
 - **Show Row Count**: Display the number of rows in the toggle summary
 - **Animation Speed**: Speed of expand/collapse animations in milliseconds
 - **Custom Summary Text**: Text to display in the toggle summary
+
+#### Row Styling Options
+- **Alternating Row Colors**: Enable/disable alternating background colors for table rows
+- **Even Row Background**: Custom background color for even-numbered rows
+- **Odd Row Background**: Custom background color for odd-numbered rows
+- **Header Background**: Custom background color for table headers
+- **Header Text Color**: Custom text color for table headers
+- **Hover Background**: Custom background color when hovering over table rows
+- **Hover Text Color**: Custom text color when hovering over table rows
 
 ## Examples
 
@@ -88,10 +100,30 @@ You can also manually wrap tables in toggle markup:
 
 The plugin includes modern, clean styling that integrates seamlessly with Obsidian's design:
 
+### Default Styling
 - Smooth hover effects
 - Consistent with Obsidian's color scheme
 - Responsive design for mobile devices
 - Print-friendly styles
+
+### Custom Row Styling
+The plugin now supports advanced row styling capabilities:
+
+- **Alternating Row Colors**: Automatically applies different background colors to even and odd rows for better readability
+- **Custom Header Styling**: Set custom background and text colors for table headers
+- **Interactive Hover Effects**: Customizable hover colors with smooth transitions
+- **Real-time Updates**: All styling changes apply immediately without requiring a page refresh
+- **Theme Compatibility**: Works seamlessly with both light and dark themes
+- **Accessibility**: Proper focus states and contrast ratios for better accessibility
+
+### Styling Examples
+
+You can create various visual styles for your tables:
+
+- **Professional**: Light gray alternating rows with dark headers
+- **Colorful**: Bright alternating colors for better visual separation
+- **Subtle**: Minimal color differences for a clean, professional look
+- **High Contrast**: Bold colors for maximum readability
 
 ## Development
 
@@ -137,6 +169,15 @@ MIT License - see LICENSE file for details.
 If you encounter any issues or have feature requests, please open an issue on the GitHub repository.
 
 ## Changelog
+
+### v1.1.0
+- Added advanced row styling capabilities
+- Customizable alternating row colors
+- Custom header background and text colors
+- Interactive hover effects with custom colors
+- Real-time styling updates
+- Enhanced accessibility features
+- Improved visual hierarchy
 
 ### v1.0.0
 - Initial release
